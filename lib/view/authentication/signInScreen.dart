@@ -220,30 +220,6 @@ class _SignInScreenState extends State<SignInScreen> {
                         onPressed: () async {
 
 
-
-
-                          if(kDebugMode){
-                            // emailTextController.text =   "user@user.com";
-                            // passwordTextController.text = "Mmmm\$1234";
-
-
-                            /// care provider
-                            // emailTextController.text =   "220410310@PSU.EDU.SA";
-                            // passwordTextController.text = "TOFE1144@";
-                            /// pet owner
-                            emailTextController.text =   "218410654@psu.edu.sa";
-                            passwordTextController.text = "123456789Nn!";
-
-
-
-                            /// Veterinarian users
-                            // emailTextController.text =   "LATIFAALESMAIL9918@gmail.com";
-                            // passwordTextController.text = "123@lAtifa";
-                          //
-
-                          }
-
-                          try {
                             if(emailTextController.text.isEmpty){
                               CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Enter email");
 
@@ -258,57 +234,13 @@ class _SignInScreenState extends State<SignInScreen> {
                             CoolAlert.show(width: 400,context: context, type: CoolAlertType.loading);
                             UserCredential userCredential = await Provider.of<UserController>(context , listen: false).loginUser(emailTextController.text,
                                 passwordTextController.text);
-                            // Login successful, you can navigate to the next screen or retrieve user data here
-                            if(userCredential.user != null){
                               print("Login successful! User ID: ${userCredential.user!.uid}");
-                              // Map<String, dynamic>? userData = await getUserData(userCredential.user!.uid);
                               Map<String, dynamic>? userData = await Provider.of<UserController>(context , listen: false).getNormalUserData(userCredential.user!.uid);
 
                               await Provider.of<UserController>(context , listen: false).saveLoginData(userData);
+                             log("User Data: $userData");
 
-                              if(userData != null){
-                                log("User Data: $userData");
-                                String type = "" ;
-                                String name = "" ;
-                                  if(userData["account_type"] == "pet_owner"){
-                                    type = "Pet Owner" ;
-                                  } else  if(userData["account_type"] == "veterinarian_user"){
-                                    type = "Pet Veterinarian" ;
-                                  } else  if(userData["account_type"] == "care_provider"){
-                                    type = "Care Provider" ;
-                                  }
 
-                                  if(userData["account_type"] == "care_provider"){
-                                    name = userData["hotel_name"] ;
-                                  } else {
-                                    name = userData["first_name"] ;
-                                  }
-                                  Map<String, dynamic> userDataN = {
-                                    'account_type_n': type,
-                                    'account_name_n': name,
-                                  };
-                                  if(userData["account_type"] == "care_provider"){
-                                    Navigator.pushReplacementNamed(context, '/CarProviderHome' , arguments: userData,);
-                                  } else  if(userData["account_type"] == "pet_owner"){
-                                    Navigator.pushReplacementNamed(context, '/PetOwnerHome' , arguments: userData,);
-                                  } else  if(userData["account_type"] == "veterinarian_user"){
-                                    Navigator.pushReplacementNamed(context, '/VeterinarianHomePage' , arguments: userData,);
-                                  } else {
-                                    userData.addAll(userDataN);
-                                    Navigator.pushReplacementNamed(context, '/HomePage' , arguments: userData,);
-                                  }
-
-                              } else{
-
-                                CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Login failed");
-                              }
-
-                            }
-
-                          } catch (e) {
-                            CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Login failed");
-                            print("Login failed: $e");
-                          }
                         },
                         color: MyStyle.mainColor,
                         elevation: 4,
@@ -340,20 +272,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     width: 400,
                     child: MaterialButton(
                         onPressed: () async {
-                          if(emailTextController.text.isEmpty){
-                            CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Enter email");
-                            return ;
-                          }else {
-                            CoolAlert.show(width: 400,context: context, type: CoolAlertType.loading);
-                            await forgotPassword();
-                            CoolAlert.show(context: context, type: CoolAlertType.success ,width: 400, title: "" ,
-                                text: "Please check your email to reset password",
-                                onConfirmBtnTap: (){
-                                  Navigator.of(context).pop();
-                                }
-                            );
-
-                          }
 
                         },
                         color: MyStyle.grey200,
@@ -517,34 +435,5 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Future forgotPassword() async {
-    try {
-      await  FirebaseAuth.instance.sendPasswordResetEmail(email: emailTextController.text);
-    } on FirebaseAuthException catch (err) {
-      throw Exception(err.message.toString());
-    } catch (err) {
-      print("err ${err}");
-      throw Exception(err.toString());
-    }
-
-  }
-
-
-  // Future addDataToFirebaseModel(String collectionName, List<String> items) async {
-  //   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //
-  //   // Use the document ID as the ID for each record
-  //   for (String item in items) {
-  //     // Get a reference to a new document with an auto-generated ID
-  //     DocumentReference documentReference = firestore.collection(collectionName).doc();
-  //
-  //     await documentReference.set({
-  //       'id': documentReference.id,
-  //       'name': item,
-  //     });
-  //   }
-  //
-  //   print('Items added to Firestore successfully!');
-  // }
 
 }
