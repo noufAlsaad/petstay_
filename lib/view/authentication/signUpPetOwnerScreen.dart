@@ -307,6 +307,79 @@ class _SignUpPetOwnerScreenState extends State<SignUpPetOwnerScreen> {
                           child: MaterialButton(
                               onPressed: () async {
 
+                                if(firstNameController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please add the full name");
+                                  return ;
+                                }  else if(lastNameController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please add the full name");
+                                  return ;
+                                } else  if(emailController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please add the email address");
+                                  return ;
+                                } else   if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$').hasMatch(emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400 ,  title: 'Please enter a valid email address');
+                                }
+                                else if (isPetOwnerEmailExists(email: emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Email is exists!");
+                                }
+                                else if (isPetVeterinarianEmailExists(email: emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Email is exists!");
+                                }
+                                else if (isPetCareProviderEmailExists(email: emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Email is exists!");
+                                }
+                                else  if(passwordController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please enter the password");
+                                }
+                                else  if(petWeightController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please enter the pet wight");
+                                }
+                                else  if(petTypeController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please enter the pet type");
+                                }
+                                else  if(petAgeController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please enter the pet age");
+                                }
+                                else  if(petHeightController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please enter the pet height");
+                                }
+                                // else if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$').hasMatch(passwordController.text)) {
+                                //   CoolAlert.show(context: context, type: CoolAlertType.error,width: 400 , title: "Please enter a valid  password");
+                                // }
+                                else if (passwordController.text.length < 8) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must be at least 8 characters long.",
+                                  );
+                                } else if (!RegExp(r'(?=.*[A-Z])').hasMatch(passwordController.text)) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must contain at least one uppercase letter.",
+                                  );
+                                } else if (!RegExp(r'(?=.*\d)').hasMatch(passwordController.text)) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must contain at least one digit.",
+                                  );
+                                } else if (!RegExp(r'(?=.*[\W_])').hasMatch(passwordController.text)) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must contain at least one special character.",
+                                  );
+                                }
+                                ///
+                                // else if(selectedCountry == null) {
+                                //   CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please select country");
+                                // }
+                                else {
 
                                   PetOwnerProfile petOwnerProfile = PetOwnerProfile(
                                     firstName: firstNameController.text,
@@ -347,6 +420,7 @@ class _SignUpPetOwnerScreenState extends State<SignUpPetOwnerScreen> {
 
 
 
+                                }
 
                               },
                               color: MyStyle.mainColor,
