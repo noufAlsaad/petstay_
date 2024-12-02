@@ -12,6 +12,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_stripe_web/flutter_stripe_web.dart';
 import 'package:pethotel/controller/userController.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../controller/styleController.dart';
 import '../../controller/widgetController.dart';
@@ -29,13 +30,20 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController passwordTextController = TextEditingController();
   bool isHidden = true;
   bool isRemember = true;
-  // String clientSecret = "sk_test_51LAfPIBPyxjcOtzS12WUSQh6PwMlkXW98MUL5kORPxxI2vmPtnWKzsEhU2SSyzeeE92RNXdkNohHdwy2kgOosfWu000sX4aKmX";
-  // String stripePublishableKey =  "pk_test_51LAfPIBPyxjcOtzSjn9C4pk9PXBcFE2MCE3adjpGb8OesmULeZ1xXCY9pWWw6ysGnWtXn7ULIBh8qqRF0NoeUNYv00RGVHrvzw";
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // Stripe.publishableKey = const String.fromEnvironment('');
+    Future.delayed(const Duration(milliseconds: 2), () async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      emailTextController.text =  await prefs.getString ('emailUser', )??"";
+      passwordTextController.text = await prefs.getString('passUser',)??"";
+      setState(() {});
+    });
+
+
+
+
 
   }
 
@@ -260,6 +268,12 @@ class _SignInScreenState extends State<SignInScreen> {
                                 passwordTextController.text);
                             // Login successful, you can navigate to the next screen or retrieve user data here
                             if(userCredential.user != null){
+
+                              final SharedPreferences prefs = await SharedPreferences.getInstance();
+                              await prefs.setString('emailUser', emailTextController.text);
+                              await prefs.setString('passUser', passwordTextController.text);
+
+
                               print("Login successful! User ID: ${userCredential.user!.uid}");
                               // Map<String, dynamic>? userData = await getUserData(userCredential.user!.uid);
                               Map<String, dynamic>? userData = await Provider.of<UserController>(context , listen: false).getNormalUserData(userCredential.user!.uid);
