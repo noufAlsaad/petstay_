@@ -241,7 +241,108 @@ class _SignUpCareProviderScreenState extends State<SignUpCareProviderScreen> {
                           width: 350,
                           child: MaterialButton(
                               onPressed: () async {
+                                if(hotelNameController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please add the name");
+                                  return ;
+                                } else  if(emailController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please add the email address");
+                                  return ;
 
+                                } else   if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$').hasMatch(emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400 ,  title: 'Please enter a valid email address');
+                                }
+
+                                else if (isPetOwnerEmailExists(email: emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Email is exists!");
+                                }    else if (isPetVeterinarianEmailExists(email: emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Email is exists!");
+                                }
+                                else if (isPetCareProviderEmailExists(email: emailController.text)) {
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Email is exists!");
+                                }
+                                else  if(passwordController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "Please enter the password");
+                                }
+                                else  if(hotelPlaceController.text.isEmpty){
+                                  CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please enter the hotel place");
+                                }
+                                // else if (!RegExp(r'^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$').hasMatch(passwordController.text)) {
+                                //   CoolAlert.show(context: context, type: CoolAlertType.error,width: 400 , title: "Please enter a valid  password");
+                                // }
+                                else if (passwordController.text.length < 8) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must be at least 8 characters long.",
+                                  );
+                                } else if (!RegExp(r'(?=.*[A-Z])').hasMatch(passwordController.text)) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must contain at least one uppercase letter.",
+                                  );
+                                } else if (!RegExp(r'(?=.*\d)').hasMatch(passwordController.text)) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must contain at least one digit.",
+                                  );
+                                } else if (!RegExp(r'(?=.*[\W_])').hasMatch(passwordController.text)) {
+                                  CoolAlert.show(
+                                    context: context,
+                                    type: CoolAlertType.error,
+                                    width: 400,
+                                    title: "Password must contain at least one special character.",
+                                  );
+                                }
+                                ///
+                                // else if(selectedArea == null) {
+                                //   CoolAlert.show(context: context, type: CoolAlertType.error, width: 400,title: "Please select area");
+                                // }
+                                else {
+
+                                  PetCareProfile profileData = PetCareProfile(
+                                    hotelName: hotelNameController.text,
+                                    hotelPlace: hotelPlaceController.text,
+                                    email: emailController.text,
+                                    password:  passwordController.text,
+                                    // area: selectedArea,
+                                    mobile: phoneController.text,
+
+                                  );
+
+                                  CoolAlert.show(width: 400,context: context, type: CoolAlertType.loading);
+                                  await Provider.of<UserController>(context , listen: false).registerPetCareProvider(emailController.text ,
+                                      passwordController.text , context , profileData )
+                                      .then((value) {
+                                    if(value != null){
+                                      if(value == true){
+                                        Navigator.of(context).pop();
+
+
+                                        CoolAlert.show(context: context, type: CoolAlertType.success ,width: 400, title: "Thanks for register in our app, You can login now" ,
+                                            onConfirmBtnTap: (){
+                                              Navigator.of(context).pop();
+                                            }
+                                        );
+                                        // RegisteredSuccessfullyPage
+                                        // Navigator.push(context, MyCustomRoute(builder: (BuildContext context) => RegisteredSuccessfullyPage()));
+                                        // Navigator.of(context).pop();
+                                        return;
+                                      } else{
+
+                                        CoolAlert.show(context: context, type: CoolAlertType.error,width: 400, title: "There is a problem , Please try again");
+                                      }
+                                    }
+                                  });
+
+
+
+
+                                }
 
                               },
                               color: MyStyle.mainColor,
